@@ -1,3 +1,8 @@
+config APP_HEARTBEAT_PERIOD_MS
+    int "LED hearbeat period"
+    default 500
+    range 100 2000
+
 menuconfig LED_SUBSYSTEM
     bool "LED Subsystem"
     default y
