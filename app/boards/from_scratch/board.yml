@@ -1,0 +1,6 @@
+board:
+  name: from_scratch
+  full_name: from_scratch
+  vendor: Olek
+  socs:
+  - name: esp32c6
