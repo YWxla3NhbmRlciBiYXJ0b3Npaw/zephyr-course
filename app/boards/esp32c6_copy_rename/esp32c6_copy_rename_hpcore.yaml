@@ -1,0 +1,24 @@
+identifier: esp32c6_copy_rename/esp32c6/hpcore
+name: Copy rename esp32c6 devkitc
+vendor: Olek
+type: mcu
+arch: riscv
+toolchain:
+  - zephyr
+supported:
+  - adc
+  - gpio
+  - watchdog
+  - uart
+  - dma
+  - pwm
+  - spi
+  - counter
+  - entropy
+  - i2c
+  - i2s
+  - netif:openthread
+
+testing:
+  ignore_tags:
+    - bluetooth

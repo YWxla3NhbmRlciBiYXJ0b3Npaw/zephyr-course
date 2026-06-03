@@ -1,0 +1,19 @@
+identifier: esp32c6_copy_rename/esp32c6/lpcore
+name: copy rename esp32c6 devkit c
+type: mcu
+arch: riscv
+toolchain:
+  - zephyr
+supported:
+  - cpu
+  - uart
+  - serial
+testing:
+  only_tags:
+    - introduction
+  ignore_tags:
+    - kernel
+    - posix
+    - chre
+    - cpp
+vendor: espressif
