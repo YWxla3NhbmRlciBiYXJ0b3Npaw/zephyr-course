@@ -4,6 +4,8 @@
 #include <zephyr/drivers/led_strip.h>
 #include <zephyr/logging/log.h>
 #include <our_driver.h>
+#include <zephyr/shell/shell.h>
+#include <stdlib.h>
 
 LOG_MODULE_REGISTER(our_driver, LOG_LEVEL_INF);
 
@@ -102,3 +104,59 @@ static int led_sensor_init(const struct device *dev)
                           &led_sensor_api)
 
 DT_INST_FOREACH_STATUS_OKAY(LED_SENSOR_INIT)
+
+#define MY_SENSOR_DEVICE DEVICE_DT_GET(DT_NODELABEL(our_driver))
+
+static int cmd_sensor_fetch(const struct shell *sh, size_t argc, char **argv)
+{
+    const struct device *dev = MY_SENSOR_DEVICE;
+
+    if (!device_is_ready(dev)) {
+        return -ENODEV;
+    }
+
+    int ret = sensor_sample_fetch(dev);
+    if (ret < 0) {
+        return ret;
+    }
+    shell_print(sh, "(LED ON)");
+    return 0;
+}
+
+static int cmd_sensor_read(const struct shell *sh, size_t argc, char **argv)
+{
+    const struct device *dev = MY_SENSOR_DEVICE;
+    struct sensor_value val = {0};
+
+    if (!device_is_ready(dev)) {
+        shell_error(sh, "Device not ready");
+        return -ENODEV;
+    }
+
+    int ret = sensor_channel_get(dev, SENSOR_CHAN_ALL, &val);
+    if (ret < 0) {
+        shell_error(sh, "Read failed: %d", ret);
+        return ret;
+    }
+
+    shell_print(sh, "val1=%d, val2=%d (LED OFF)", val.val1, val.val2);
+    return 0;
+}
+
+static int cmd_sensor_info(const struct shell *sh, size_t argc, char **argv)
+{
+    const struct device *dev = MY_SENSOR_DEVICE;
+
+    shell_print(sh, "Device name: %s", dev->name);
+    shell_print(sh, "Status ready:    %s", device_is_ready(dev) ? "True" : "False");
+    return 0;
+}
+
+SHELL_STATIC_SUBCMD_SET_CREATE(sub_sensor,
+    SHELL_CMD(fetch, NULL, "Fetches sensor (LED ON)", cmd_sensor_fetch),
+    SHELL_CMD(read,  NULL, "Reads sensor (LED OFF)", cmd_sensor_read),
+    SHELL_CMD(info,  NULL, "Shows name and sensor status", cmd_sensor_info),
+    SHELL_SUBCMD_SET_END
+);
+
+SHELL_CMD_REGISTER(sensor, &sub_sensor, "LED Sensor commands", NULL);
