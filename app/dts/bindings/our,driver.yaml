@@ -1,0 +1,8 @@
+description: Our Simple driver
+compatible: "our,driver"
+include: sensor-device.yaml
+
+properties:
+  led-strip:
+    type: phandle
+    required: true

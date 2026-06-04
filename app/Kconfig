@@ -64,4 +64,4 @@ config BLINK_SLEEP_TIME_MS
 endif
 
 source "Kconfig.zephyr"
-
+rsource "drivers/our_driver/Kconfig"

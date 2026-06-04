@@ -5,6 +5,11 @@
 	aliases {
 		app-led = &led0;
 	};
+	our_driver: our_driver {
+		compatible = "our,driver";
+		status = "okay";
+		led-strip = <&led0>;
+	};
 };
 
 &pinctrl {
