@@ -152,10 +152,32 @@ static int cmd_sensor_info(const struct shell *sh, size_t argc, char **argv)
     return 0;
 }
 
+static int cmd_sensor_set(const struct shell *sh, size_t argc, char **argv)
+{
+    const struct device *dev = MY_SENSOR_DEVICE;
+
+    int brightness_val = atoi(argv[1]);
+
+    if (brightness_val < 0 || brightness_val > 255) {
+        shell_error(sh, "Error: Value out of range (0-255)");
+        return -EINVAL;
+    }
+
+    int ret = our_driver_set_brightness(dev, (uint8_t)brightness_val);
+    if (ret < 0) {
+        shell_error(sh, "Error setting brightness: %d", ret);
+        return ret;
+    }
+
+    shell_print(sh, "Brightness updated to %d", brightness_val);
+    return 0;
+}
+
 SHELL_STATIC_SUBCMD_SET_CREATE(sub_sensor,
     SHELL_CMD(fetch, NULL, "Fetches sensor (LED ON)", cmd_sensor_fetch),
     SHELL_CMD(read,  NULL, "Reads sensor (LED OFF)", cmd_sensor_read),
     SHELL_CMD(info,  NULL, "Shows name and sensor status", cmd_sensor_info),
+    SHELL_CMD_ARG(set, NULL, "Sets brightness parameter (0-255)", cmd_sensor_set, 2 , 0),
     SHELL_SUBCMD_SET_END
 );
 
